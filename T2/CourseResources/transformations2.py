@@ -107,7 +107,6 @@ def shearing(xy, yx, xz, zx, yz, zy):
         [0, 0, 0, 1]], dtype=np.float32)
 
 
-# Multiplayer de matrix
 def matmul(mats):
     out = mats[0]
     for i in range(1, len(mats)):

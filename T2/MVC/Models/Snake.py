@@ -1,7 +1,6 @@
 from MVC.Models.SnakeSegment import SnakeSegment
 
 
-
 class Snake(object):
 
     def __init__(self, grid_size, apple):
@@ -12,8 +11,8 @@ class Snake(object):
         self.grid_unit = 2 / grid_size
 
     # Draws the snake node into the scene
-    def draw(self, pipeline):
-        self.head.draw(pipeline)
+    def draw(self, pipeline_texture, projection, view):
+        self.head.draw(pipeline_texture, projection, view)
 
     # Returns the position of the Snake
     def get_position(self):
@@ -60,5 +59,6 @@ class Snake(object):
             self.head.add_segment()
             self.apple.respawn(self)
 
+    # Checks in all of the segments of the snake
     def check_in_snake(self, position):
         return self.head.check_in_snake(position)
