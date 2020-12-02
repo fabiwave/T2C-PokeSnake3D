@@ -1,6 +1,6 @@
+from math import pi
 from random import randint
 
-import numpy as np
 from OpenGL.GL import *
 
 from CourseResources import easy_shaders as es
@@ -20,7 +20,13 @@ class Apple(object):
         gpu_carrot = es.toGPUShape(
             shape=readOBJ("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Objects/carrot.obj",
                           (1, 1, 0)))
-        carrot = sg.SceneGraphNode("carrot")
+        body = sg.SceneGraphNode("body")
+        body.transform = tr.scale(self.grid_unit * 0.7, self.grid_unit * 0.7, self.grid_unit * 0.7)
+        body.childs += [gpu_carrot]
+
+        apple = sg.SceneGraphNode('carrot')
+        apple.transform = tr.rotationZ(pi)
+        apple.childs += [body]
 
         # Translation delta for adjustment of the snake in the grid
         self.t_delta = 0
@@ -32,22 +38,20 @@ class Apple(object):
         if self.total_grid % 2 == 0:
             half_grid = half_grid - 1
 
+        half_grid = int((self.total_grid - 2) / 2)
+        if self.total_grid % 2 == 0:
+            half_grid = half_grid - 1
+
         random_x = randint(-half_grid, half_grid)
         random_y = randint(-half_grid, half_grid)
-        x_adjusted = self.t_delta + (random_x * self.grid_unit)
-        y_adjusted = self.t_delta + (random_y * self.grid_unit)
 
-        # Transformations related to the object
-        carrot.transform = tr.matmul([
-            tr.uniformScale(self.grid_unit),
-            tr.rotationX(np.pi / 4),
-            tr.translate(x_adjusted, y_adjusted, 0)])
-        carrot.childs += [gpu_carrot]
+        self.model = apple
+        self.pos_x = self.t_delta + (random_x * self.grid_unit)
+        self.pos_y = self.t_delta + (random_y * self.grid_unit)
 
-        # Designation of the previous apple as the model of this class
-        self.model = carrot
-        self.pos_x = x_adjusted
-        self.pos_y = y_adjusted
+        # Translation of the Apple to the random position
+        self.model.transform = tr.translate(self.t_delta + (random_x * self.grid_unit),
+                                            self.t_delta + (random_y * self.grid_unit), 0)
 
     # Draws the apple node into the scene
     def draw(self, pipeline_light, projection, view):

@@ -16,7 +16,7 @@ class Wall(object):
 
         # Creation of basic figure of the Wall
         gpu_brick_quad = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T1C-poke-snake/T1/MVC/Models/Images/bush.png"),
+            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/bush.png"),
             GL_REPEAT, GL_NEAREST)
 
         # Creation of the a generic brick node

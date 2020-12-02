@@ -14,7 +14,7 @@ class Background(object):
         self.grid_unit = 2 / self.total_grid
 
         gpu_ground = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T1C-poke-snake/T1/MVC/Models/Images/grass.png"),
+            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/grass.png"),
             GL_REPEAT, GL_NEAREST)
 
         grass = sg.SceneGraphNode('grass')

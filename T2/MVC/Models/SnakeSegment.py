@@ -21,10 +21,10 @@ class SnakeSegment(object):
         self._rotations = {"Up": pi / 2, "Left": pi, "Down": 3 * pi / 2, "Right": 2 * pi}
 
         gpu_face = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T1C-poke-snake/T1/MVC/Models/Images/bush.png"),
+            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/face.png"),
             GL_REPEAT, GL_NEAREST)
         gpu_skin = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T1C-poke-snake/T1/MVC/Models/Images/snake.png"),
+            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/body.png"),
             GL_REPEAT, GL_NEAREST)
 
         # Creation of body node in the graph
@@ -40,27 +40,29 @@ class SnakeSegment(object):
         snake.transform = tr.scale(self.grid_unit, self.grid_unit, self.grid_unit)
         snake.childs += [head, face]
 
+        # Addition the snake to the scene graph node
+        transform_snake = sg.SceneGraphNode('snakeTR')
+        transform_snake.childs += [snake]
+
         # Translation delta for adjustment of the snake in the grid
         self.t_delta = 0
         if self.total_grid % 2 == 0:
             self.t_delta = self.grid_unit / 2
 
         # Designation of the previous snake as the model of this class
-        self.model = snake
+        self.model = transform_snake
         self.pos_x = self.t_delta
         self.pos_y = self.t_delta
 
         # Translation of the snake to the center position
-        self.model.transform = tr.matmul([tr.translate(self.t_delta, self.t_delta, 0),
-                                          tr.rotationZ(pi / 2),
-                                          tr.scale(self.grid_unit,self.grid_unit,self.grid_unit)])
+        self.model.transform = tr.matmul([tr.translate(self.t_delta, self.t_delta, 0), tr.rotationZ(pi / 2)])
 
     def draw(self, pipeline_texture, projection, view):
         # To draw the texture parts of the snake
         glUseProgram(pipeline_texture.shaderProgram)
         glUniformMatrix4fv(glGetUniformLocation(pipeline_texture.shaderProgram, "projection"), 1, GL_TRUE, projection)
         glUniformMatrix4fv(glGetUniformLocation(pipeline_texture.shaderProgram, "view"), 1, GL_TRUE, view)
-        sg.drawSceneGraphNode(sg.findNode(self.model, 'bodyTR'), pipeline_texture)
+        sg.drawSceneGraphNode(sg.findNode(self.model, 'snakeTR'), pipeline_texture)
         if self.next_segment is not None:
             self.next_segment.draw(pipeline_texture, projection, view)
 
@@ -133,7 +135,7 @@ class SnakeSegment(object):
     # Returns if the snake is colliding into a wall
     def wall_collision(self):
         wall_boolean = False
-        wall_pos = self.total_grid
+        wall_pos = 1 - self.grid_unit
 
         if self.pos_x >= wall_pos or self.pos_x <= -wall_pos or self.pos_y >= wall_pos or self.pos_y <= -wall_pos:
             self.alive = False
@@ -171,13 +173,11 @@ class SnakeSegment(object):
             return self.next_segment.check_in_snake(position)
 
     # Returns the rotation
-    # TODO: Checkear para 3d
     def rotate(self, new_dir):
         rotation = self._rotations[new_dir]
         transform = tr.rotationZ(rotation)
         return transform
 
-    # TODO: MODIFICAR PARA 3D
     def move_to_last(self, pos, previous_dir):
         if previous_dir == "Right":
             self.set_position(pos[0] - self.grid_unit, pos[1])
