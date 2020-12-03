@@ -62,3 +62,7 @@ class Snake(object):
     # Checks in all of the segments of the snake
     def check_in_snake(self, position):
         return self.head.check_in_snake(position)
+
+    # Returns the last head mov
+    def get_head_last_mov(self):
+        return self.head.last_mov

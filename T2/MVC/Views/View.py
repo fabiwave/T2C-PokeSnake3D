@@ -1,19 +1,20 @@
-import sys
 import os
+import sys
+from math import pi
+
 import glfw
-import numpy as np
 import pygame
 from OpenGL.GL import *
-from math import pi
+
 from CourseResources import easy_shaders as es
 from CourseResources import lighting_shaders as ls
-from CourseResources import transformations2 as tr
 from MVC.Controllers import Controller
 from MVC.Models import Apple
 from MVC.Models import Background
+from MVC.Models import End
 from MVC.Models import Snake
 from MVC.Models import Wall
-from MVC.Models import End
+from MVC.Views.Camera import Camera
 
 if __name__ == '__main__':
     # We initialize glfw
@@ -41,7 +42,7 @@ if __name__ == '__main__':
     # Connecting the callback function 'on_key' to handle keyboard events
     glfw.set_key_callback(window, controller.on_key)
 
-    # Assembling the shader program (pipeline) with all of the necesary shaders
+    # Assembling the shader program (pipeline) with all of the necessary shaders
     textureShaderProgram = es.SimpleTextureModelViewProjectionShaderProgram()
     colorShaderProgram = es.SimpleModelViewProjectionShaderProgram()
     lightShaderProgram = ls.SimpleGouraudShaderProgram()
@@ -52,30 +53,6 @@ if __name__ == '__main__':
     # Activates the depth as we are working in 3D
     glEnable(GL_DEPTH_TEST)
 
-    # Camera settings and projection
-    # Setting up the view transform
-
-    camera_theta = -3*pi/4
-    R = 1
-    camX = R * np.sin(camera_theta)
-    camY = R * np.cos(camera_theta)
-    viewPos = np.array([camX, camY, 1])
-    view = tr.lookAt(
-        viewPos,
-        np.array([0, 0, 1]),
-        np.array([0, 0, 1])
-    )
-
-    # Setting up the projection transform
-    projection = tr.perspective(60, float(width) / float(height), 0.1, 10)
-
-    view = tr.lookAt(  # Where to point and where is the camera
-        np.array([10, 10, 5]),
-        np.array([0, 0, 0]),
-        np.array([0, 0, 1])
-    )
-
-
     # Creation of the models
     size = 17
     last_move = 0.0
@@ -85,8 +62,11 @@ if __name__ == '__main__':
     wall = Wall.Wall(size)
     end_scene = End.End()
 
+    # Camera settings and projection
+    camera = Camera(size)
+
     # Models to control by the controller are set
-    controller.set_snake(snake)
+    controller.set_snake(snake, camera)
 
     # Initializes pygame for music
     music_path = os.path.abspath(os.path.dirname(__file__))
@@ -103,6 +83,10 @@ if __name__ == '__main__':
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+        # Settings from the camera
+        projection = camera.get_projection()
+        view = camera.get_view(snake)
+
         # We draw the models into the scene
         wall.draw(textureShaderProgram, projection, view)
         snake.draw(textureShaderProgram, projection, view)
@@ -111,7 +95,8 @@ if __name__ == '__main__':
 
         # Movement of the snake
         current_time = glfw.get_time()
-        time = 0.35
+        # Todo: cambiar este numero a 0.35 para velocidad correcta
+        time = 1
         delta = current_time - last_move
 
         # Time for update of movement
