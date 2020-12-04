@@ -7,7 +7,7 @@ class Camera(object):
 
     def __init__(self, grid_size):
         self.grid_unit = 2 / grid_size
-        self.current_mode = "person"
+        self.current_mode = "2d"
 
     # Returns the view related to a kind of camera
     def get_view(self, snake):
@@ -99,3 +99,7 @@ class Camera(object):
     # Sets the current mode as a first person camera
     def set_first_person_camera(self):
         self.current_mode = "person"
+
+    # Returns the current mode of the camera
+    def get_current_mode(self):
+        return self.current_mode

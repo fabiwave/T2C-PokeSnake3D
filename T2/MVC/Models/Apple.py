@@ -19,13 +19,14 @@ class Apple(object):
         # Object to model the apple
         gpu_carrot = es.toGPUShape(
             shape=readOBJ("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Objects/carrot.obj",
-                          (1, 1, 0)))
+                          (1, 102 / 255, 178 / 255)))
         body = sg.SceneGraphNode("body")
-        body.transform = tr.scale(self.grid_unit * 0.7, self.grid_unit * 0.7, self.grid_unit * 0.7)
+        body.transform = tr.matmul([
+            tr.uniformScale(self.grid_unit),
+            tr.rotationX(pi / 2)])
         body.childs += [gpu_carrot]
 
         apple = sg.SceneGraphNode('carrot')
-        apple.transform = tr.rotationZ(pi)
         apple.childs += [body]
 
         # Translation delta for adjustment of the snake in the grid
@@ -69,7 +70,7 @@ class Apple(object):
         # Shininess of the object and z-location of the light depending on the amount of respawns
         shiny = 100
         z = 10
-        if self.eaten % 4 == 0:
+        if self.eaten % 4 == 0 and self.eaten != 0:
             shiny = 1
             z = 1
 
@@ -122,4 +123,3 @@ class Apple(object):
         self.pos_y = pos_y
         self.update_pos()
         self.eaten += 1
-

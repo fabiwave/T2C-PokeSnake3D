@@ -95,8 +95,7 @@ if __name__ == '__main__':
 
         # Movement of the snake
         current_time = glfw.get_time()
-        # Todo: cambiar este numero a 0.35 para velocidad correcta
-        time = 1
+        time = 0.35
         delta = current_time - last_move
 
         # Time for update of movement
@@ -119,7 +118,7 @@ if __name__ == '__main__':
                 seconds = (current_time - game_over_time)
                 if seconds > 0.475:
                     game_over_time = glfw.get_time()
-                    end_scene.rotate(pi / 7)
+                    end_scene.rotate(pi / 8)
 
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)
