@@ -1,9 +1,12 @@
+import os
 from math import pi
-from CourseResources import easy_shaders as es
+
+from OpenGL.GL import *
+
 from CourseResources import basic_shapes as bs
+from CourseResources import easy_shaders as es
 from CourseResources import scene_graph2 as sg
 from CourseResources import transformations2 as tr
-from OpenGL.GL import *
 
 
 class Wall(object):
@@ -14,10 +17,12 @@ class Wall(object):
         self.total_grid = grid_size
         self.grid_unit = 2 / self.total_grid
 
+        # Direction for relatives paths
+        directory_path = os.path.abspath(os.path.dirname(__file__))
+        image_path = os.path.join(directory_path, 'Images/bush.png')
+
         # Creation of basic figure of the Wall
-        gpu_brick_quad = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/bush.png"),
-            GL_REPEAT, GL_NEAREST)
+        gpu_brick_quad = es.toGPUShape(bs.createTextureCube(image_path), GL_REPEAT, GL_NEAREST)
 
         # Creation of the a generic brick node
         brick = sg.SceneGraphNode("Brick")

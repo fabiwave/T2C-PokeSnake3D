@@ -1,3 +1,5 @@
+import os
+
 from OpenGL.GL import *
 
 from CourseResources import basic_shapes as bs
@@ -9,10 +11,12 @@ from CourseResources import transformations2 as tr
 class End(object):
 
     def __init__(self):
+        # Direction for relatives paths
+        directory_path = os.path.abspath(os.path.dirname(__file__))
+        image_path = os.path.join(directory_path, 'Images/end.png')
+
         # Creation of basic figure of the end scene
-        gpu_end = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/end.png"),
-            GL_REPEAT, GL_NEAREST)
+        gpu_end = es.toGPUShape(bs.createTextureCube(image_path), GL_REPEAT, GL_NEAREST)
         end_scene = sg.SceneGraphNode("End")
         end_scene.transform = tr.uniformScale(1)
         end_scene.childs += [gpu_end]

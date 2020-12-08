@@ -16,7 +16,8 @@ from MVC.Models import Snake
 from MVC.Models import Wall
 from MVC.Views.Camera import Camera
 
-if __name__ == '__main__':
+
+def run(grid_size=10):
     # We initialize glfw
     if not glfw.init():
         sys.exit()
@@ -54,16 +55,16 @@ if __name__ == '__main__':
     glEnable(GL_DEPTH_TEST)
 
     # Creation of the models
-    size = 17
+    real_grid_size = grid_size + 2
     last_move = 0.0
-    apple = Apple.Apple(size)
-    snake = Snake.Snake(size, apple)
-    background = Background.Background(size)
-    wall = Wall.Wall(size)
+    apple = Apple.Apple(real_grid_size)
+    snake = Snake.Snake(real_grid_size, apple)
+    background = Background.Background(real_grid_size)
+    wall = Wall.Wall(real_grid_size)
     end_scene = End.End()
 
     # Camera settings and projection
-    camera = Camera(size)
+    camera = Camera(real_grid_size)
 
     # Models to control by the controller are set
     controller.set_snake(snake, camera)

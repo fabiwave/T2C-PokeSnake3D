@@ -1,3 +1,4 @@
+import os
 from math import pi
 from random import randint
 
@@ -16,10 +17,12 @@ class Apple(object):
         self.total_grid = grid_size
         self.grid_unit = self.grid_unit = 2 / self.total_grid
 
+        # Direction for relatives paths
+        directory_path = os.path.abspath(os.path.dirname(__file__))
+        obj_path = os.path.join(directory_path, 'Objects/carrot.obj')
+
         # Object to model the apple
-        gpu_carrot = es.toGPUShape(
-            shape=readOBJ("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Objects/carrot.obj",
-                          (1, 102 / 255, 178 / 255)))
+        gpu_carrot = es.toGPUShape(shape=readOBJ(obj_path, (1, 102 / 255, 178 / 255)))
         body = sg.SceneGraphNode("body")
         body.transform = tr.matmul([
             tr.uniformScale(self.grid_unit),

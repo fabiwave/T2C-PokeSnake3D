@@ -1,3 +1,4 @@
+import os
 from math import pi
 
 from OpenGL.GL import *
@@ -20,12 +21,14 @@ class SnakeSegment(object):
         self.next_segment = None
         self._rotations = {"Up": pi / 2, "Left": pi, "Down": 3 * pi / 2, "Right": 2 * pi}
 
-        gpu_face = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/face.png"),
-            GL_REPEAT, GL_NEAREST)
-        gpu_skin = es.toGPUShape(
-            bs.createTextureCube("/home/fabiwave/PycharmProjects/T2C-PokeSnake3D/T2/MVC/Models/Images/body.png"),
-            GL_REPEAT, GL_NEAREST)
+        # Direction for relatives paths
+        directory_path = os.path.abspath(os.path.dirname(__file__))
+        image_face_path = os.path.join(directory_path, 'Images/face.png')
+        image_skin_path = os.path.join(directory_path, 'Images/body.png')
+
+        # Creation of basic figure of the Snake
+        gpu_face = es.toGPUShape(bs.createTextureCube(image_face_path), GL_REPEAT, GL_NEAREST)
+        gpu_skin = es.toGPUShape(bs.createTextureCube(image_skin_path), GL_REPEAT, GL_NEAREST)
 
         # Creation of body node in the graph
         head = sg.SceneGraphNode("head")
@@ -36,12 +39,12 @@ class SnakeSegment(object):
         face.transform = tr.matmul([tr.scale(0.95, 0.95, 0.95), tr.translate(0.1, 0, 0)])
         face.childs += [gpu_face]
 
-        snake = sg.SceneGraphNode('bodyTR')
+        snake = sg.SceneGraphNode('body')
         snake.transform = tr.scale(self.grid_unit, self.grid_unit, self.grid_unit)
         snake.childs += [head, face]
 
         # Addition the snake to the scene graph node
-        transform_snake = sg.SceneGraphNode('snakeTR')
+        transform_snake = sg.SceneGraphNode('snake')
         transform_snake.childs += [snake]
 
         # Translation delta for adjustment of the snake in the grid
@@ -62,7 +65,7 @@ class SnakeSegment(object):
         glUseProgram(pipeline_texture.shaderProgram)
         glUniformMatrix4fv(glGetUniformLocation(pipeline_texture.shaderProgram, "projection"), 1, GL_TRUE, projection)
         glUniformMatrix4fv(glGetUniformLocation(pipeline_texture.shaderProgram, "view"), 1, GL_TRUE, view)
-        sg.drawSceneGraphNode(sg.findNode(self.model, 'snakeTR'), pipeline_texture)
+        sg.drawSceneGraphNode(sg.findNode(self.model, 'snake'), pipeline_texture)
         if self.next_segment is not None:
             self.next_segment.draw(pipeline_texture, projection, view)
 
