@@ -20,6 +20,7 @@ class Controller(object):
             return
 
         if key == glfw.KEY_ESCAPE:
+            glfw.terminate()
             sys.exit()
 
         elif (key == glfw.KEY_LEFT or key == glfw.KEY_A) and action == glfw.PRESS:
